@@ -53,7 +53,11 @@ const TravelRequestApproval = () => {
         <div className='p-6 bg-white rounded-xl'>
           <div className='flex justify-between items-center mb-4'>
             <div className='text-lg font-semibold'>Travel Request Approval</div>
-            <Button onClick={() => navigate("/travel/new")}>
+            <Button
+              onClick={() =>
+                navigate("/travel and expense management/new-travel-request")
+              }
+            >
               Create New Travel Request
             </Button>
           </div>

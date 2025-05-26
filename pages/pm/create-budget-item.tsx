@@ -1,6 +1,6 @@
 import React from "react";
 
-const createBudgetItem = () => {
+const CreateBudgetItem = () => {
   return (
     <div>
       <h1>CREATE BUDGET ITEM</h1>
@@ -8,4 +8,4 @@ const createBudgetItem = () => {
   );
 };
 
-export default createBudgetItem;
+export default CreateBudgetItem;

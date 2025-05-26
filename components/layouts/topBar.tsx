@@ -9,10 +9,10 @@ import {
 
 interface TopBarProps {
   userName: string;
-  productName: string;
+  positionName: string;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ userName, productName }) => {
+const TopBar: React.FC<TopBarProps> = ({ userName, positionName }) => {
   return (
     <div className='flex items-center justify-between px-5 py-3 bg-white border-b border-gray-200'>
       <div className='flex items-center'>
@@ -26,12 +26,16 @@ const TopBar: React.FC<TopBarProps> = ({ userName, productName }) => {
       </div>
 
       <div className='flex items-center gap-4'>
-        <button className='p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors bg-muted flex items-center justify-center rounded-full '>
-          <Settings size={20} />
-        </button>
-        <button className='p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors bg-muted flex items-center justify-center rounded-full'>
-          <Bell size={20} />
-        </button>
+        <Settings
+          size={35}
+          className='p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors bg-muted flex items-center justify-center rounded-md'
+        />
+
+        <Bell
+          size={35}
+          className='p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors bg-muted flex items-center justify-center rounded-md'
+        />
+
         <div className='flex items-center gap-3'>
           <Avatar>
             <AvatarImage src='' />
@@ -39,7 +43,7 @@ const TopBar: React.FC<TopBarProps> = ({ userName, productName }) => {
           </Avatar>
           <div className='text-sm'>
             <div className='font-medium text-gray-900'>{userName}</div>
-            <div className='text-gray-500 text-xs'>{productName}</div>
+            <div className='text-gray-500 text-xs'>{positionName}</div>
           </div>
           <ChevronDown size={16} className='text-gray-500' />
         </div>

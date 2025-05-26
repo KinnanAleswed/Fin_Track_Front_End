@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, HomeIcon } from "lucide-react";
 
 const Breadcrumbs = () => {
   const location = useLocation();
@@ -11,9 +11,10 @@ const Breadcrumbs = () => {
       className='flex items-center text-sm text-gray-500'
       aria-label='Breadcrumb'
     >
-      <ol className='inline-flex items-center space-x-1'>
+      <ol className='px-2 inline-flex items-center space-x-1'>
         <li>
           <Link to='/Dashboard' className='hover:text-[#28a5d6] font-medium'>
+            <HomeIcon size={14} className='inline mr-2 mb-1' />
             Home
           </Link>
         </li>

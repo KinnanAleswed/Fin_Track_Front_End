@@ -1,10 +1,14 @@
-import { useState } from "react";
+// src/components/projects/CreateProjectForm.tsx
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  useGetLookupsQuery,
   useAddProjectMutation,
-  useGetProjectManagersQuery,
-} from "../../api/projectApi";
-
+} from "../../redux/projectApi";
+import type {
+  GetLookupsResponse,
+  NewProjectRequest,
+} from "../../redux/projecttypes";
 import { Label } from "@radix-ui/react-label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -15,148 +19,107 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
-const inputClass = "h-10 w-full border-[#e7e7e8]";
-
-const CreateProjectForm = () => {
+const CreateProjectForm: React.FC = () => {
   const navigate = useNavigate();
-  const [addProject, { isLoading }] = useAddProjectMutation();
-  const { data: projectManagers, isLoading: isPMLoading } =
-    useGetProjectManagersQuery();
+  const { data: lookups, isLoading: lookupsLoading } = useGetLookupsQuery();
+  const [addProject, { isLoading: isSaving }] = useAddProjectMutation();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<NewProjectRequest>({
     name: "",
+    clientId: "",
     code: "",
     status: "",
+    projectManager: "",
     billingRateTimePeriod: "",
     startDate: "",
     endDate: "",
-    totalContract: "",
-    approvedBudget: "",
-    allocatedBudget: "",
+    totalContract: 0,
+    approvedBudget: 0,
+    allocatedBudget: 0,
     billingType: "Fixed Bid",
-    managerId: "",
-    clientId: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const { id, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "number" ? Number(value) : (value as any),
+    }));
   };
 
-  const handleSelectChange = (id: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  const handleRadioChange = (id: string, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
+  const handleSelect = (field: keyof NewProjectRequest, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value as any,
+    }));
   };
 
   const handleSubmit = async () => {
     try {
-      const payload = {
+      await addProject({
         ...formData,
-        totalContract: Number(formData.totalContract),
-        approvedBudget: Number(formData.approvedBudget),
-        allocatedBudget: Number(formData.allocatedBudget),
         startDate: new Date(formData.startDate).toISOString(),
         endDate: new Date(formData.endDate).toISOString(),
-      };
-
-      console.log("Submitting payload:", payload);
-
-      await addProject(payload).unwrap();
-      navigate("/projects");
+      }).unwrap();
+      navigate("/projects List");
     } catch (err) {
-      console.error("Failed to create project:", err);
+      console.error(err);
     }
   };
 
+  if (lookupsLoading) return <div>Loading...</div>;
+  if (!lookups) return <div>Error loading form data.</div>;
+
+  const { clients, status, billingRateTimePeriods, projectManagers } =
+    lookups as GetLookupsResponse;
+
   return (
-    <>
-      <div className='flex items-center mb-3'>
-        <h2 className='text-lg font-semibold text-[#00608d] mr-2'>
+    <div className='max-w-8xl mx-auto px-8'>
+      <div className='flex items-center mb-6'>
+        <h2 className='text-2xl font-semibold text-[#00608d]'>
           Add New Project
         </h2>
-        <div className='flex-grow border-t border-gray-300' />
+        <div className='flex-1 h-px bg-gray-300 ml-4'></div>
       </div>
 
-      <div className='border rounded-md px-8 py-6'>
-        <div className='grid grid-cols-2 gap-6'>
-          {/* Row 1 */}
+      <div className='bg-white border border-gray-200 rounded-lg shadow-sm p-7'>
+        <div className='grid grid-cols-2 gap-x-8 gap-y-6'>
           <div>
-            <Label htmlFor='name'>Name*</Label>
+            <Label
+              htmlFor='name'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Name<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='name'
-              className={inputClass}
-              placeholder='Enter project name'
+              placeholder=''
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
               value={formData.name}
               onChange={handleChange}
             />
           </div>
-          <div>
-            <Label htmlFor='client'>Client *</Label>
-            <Select
-              onValueChange={(val) => handleSelectChange("clientId", val)}
-            >
-              <SelectTrigger id='client' className={inputClass}>
-                <SelectValue placeholder='Select client' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='a3f47b22-9e3c-4b1d-8f67-2d6e95a9e5a1'>
-                  Client A
-                </SelectItem>
-                <SelectItem value='d27f8a10-1b4f-49c2-b7d1-1f4e8e3c9a5b'>
-                  Client B
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
-          {/* Row 2 */}
           <div>
-            <Label htmlFor='code'>Code *</Label>
-            <Input
-              id='code'
-              className={inputClass}
-              placeholder='Enter code'
-              value={formData.code}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <Label htmlFor='status'>Status *</Label>
-            <Select onValueChange={(val) => handleSelectChange("status", val)}>
-              <SelectTrigger id='status' className={inputClass}>
-                <SelectValue placeholder='Select status' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value='Active'>Active</SelectItem>
-                <SelectItem value='On Hold'>On Hold</SelectItem>
-                <SelectItem value='Completed'>Completed</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Row 3 */}
-          <div>
-            <Label htmlFor='pm'>Project Manager *</Label>
-            <Select
-              onValueChange={(val) => handleSelectChange("managerId", val)}
+            <Label
+              htmlFor='clientId'
+              className='block text-sm font-medium text-gray-700 mb-1'
             >
-              <SelectTrigger id='pm' className={inputClass}>
-                <SelectValue
-                  placeholder={
-                    isPMLoading ? "Loading..." : "Select project manager"
-                  }
-                />
+              Client<span className='text-red-500'>*</span>
+            </Label>
+            <Select onValueChange={(v) => handleSelect("clientId", v)}>
+              <SelectTrigger
+                id='clientId'
+                className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              >
+                <SelectValue placeholder='' />
               </SelectTrigger>
               <SelectContent>
-                {projectManagers?.map((pm) => (
-                  <SelectItem key={pm.id} value={pm.id}>
-                    {pm.name}
+                {clients.map((c) => (
+                  <SelectItem key={c.value} value={c.value}>
+                    {c.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -164,125 +127,210 @@ const CreateProjectForm = () => {
           </div>
 
           <div>
-            <Label htmlFor='billing'>Billing Rate Time Period *</Label>
-            <Select
-              onValueChange={(val) =>
-                handleSelectChange("billingRateTimePeriod", val)
-              }
+            <Label
+              htmlFor='code'
+              className='block text-sm font-medium text-gray-700 mb-1'
             >
-              <SelectTrigger id='billing' className={inputClass}>
-                <SelectValue placeholder='Select billing rate' />
+              Code<span className='text-red-500'>*</span>
+            </Label>
+            <Input
+              id='code'
+              placeholder=''
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              value={formData.code}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <Label
+              htmlFor='status'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Status<span className='text-red-500'>*</span>
+            </Label>
+            <Select onValueChange={(v) => handleSelect("status", v)}>
+              <SelectTrigger
+                id='status'
+                className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              >
+                <SelectValue placeholder='' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='Hourly'>Hourly</SelectItem>
-                <SelectItem value='Daily'>Daily</SelectItem>
-                <SelectItem value='Monthly'>Monthly</SelectItem>
+                {status.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Row 4 */}
           <div>
-            <Label htmlFor='startDate'>Project Start Date *</Label>
+            <Label
+              htmlFor='projectManager'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Project Manager<span className='text-red-500'>*</span>
+            </Label>
+            <Select onValueChange={(v) => handleSelect("projectManager", v)}>
+              <SelectTrigger
+                id='projectManager'
+                className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              >
+                <SelectValue placeholder='' />
+              </SelectTrigger>
+              <SelectContent>
+                {projectManagers.map((pm) => (
+                  <SelectItem key={pm.value} value={pm.value}>
+                    {pm.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label
+              htmlFor='billingRateTimePeriod'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Billing Rate Time Period<span className='text-red-500'>*</span>
+            </Label>
+            <Select
+              onValueChange={(v) => handleSelect("billingRateTimePeriod", v)}
+            >
+              <SelectTrigger
+                id='billingRateTimePeriod'
+                className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              >
+                <SelectValue placeholder='' />
+              </SelectTrigger>
+              <SelectContent>
+                {billingRateTimePeriods.map((b) => (
+                  <SelectItem key={b.value} value={b.value}>
+                    {b.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label
+              htmlFor='startDate'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Project Start Date<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='startDate'
               type='date'
-              className={inputClass}
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
               value={formData.startDate}
               onChange={handleChange}
             />
           </div>
+
           <div>
-            <Label htmlFor='endDate'>Project End Date *</Label>
+            <Label
+              htmlFor='endDate'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Project End Date<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='endDate'
               type='date'
-              className={inputClass}
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
               value={formData.endDate}
               onChange={handleChange}
             />
           </div>
 
-          {/* Row 5 */}
           <div>
-            <Label htmlFor='totalContract'>Total Contract Value *</Label>
+            <Label
+              htmlFor='totalContract'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Total Contract Value<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='totalContract'
-              className={inputClass}
-              placeholder='Enter value'
-              value={formData.totalContract}
+              type='number'
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              value={formData.totalContract.toString()}
               onChange={handleChange}
             />
           </div>
+
           <div>
-            <Label htmlFor='approvedBudget'>Approved Budget Value *</Label>
+            <Label
+              htmlFor='approvedBudget'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Approved Budget Value<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='approvedBudget'
-              className={inputClass}
-              placeholder='Enter value'
-              value={formData.approvedBudget}
+              type='number'
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              value={formData.approvedBudget.toString()}
               onChange={handleChange}
             />
           </div>
 
-          {/* Row 6 */}
           <div className='col-span-2'>
-            <Label htmlFor='allocatedBudget'>Allocated Budget Value *</Label>
+            <Label
+              htmlFor='allocatedBudget'
+              className='block text-sm font-medium text-gray-700 mb-1'
+            >
+              Allocated Budget Value<span className='text-red-500'>*</span>
+            </Label>
             <Input
               id='allocatedBudget'
-              className={inputClass}
-              placeholder='Enter value'
-              value={formData.allocatedBudget}
+              type='number'
+              className='h-10 w-full bg-gray-50 border border-gray-200 rounded text-gray-900'
+              value={formData.allocatedBudget.toString()}
               onChange={handleChange}
             />
           </div>
         </div>
 
-        {/* Radio Groups */}
-        <div className='mt-6 space-y-6'>
-          <div>
-            <Label>Billing Type *</Label>
-            <RadioGroup
-              defaultValue={formData.billingType}
-              onValueChange={(val) => handleRadioChange("billingType", val)}
-              className='flex space-x-6 mt-2'
-            >
-              <div className='flex items-center space-x-2'>
-                <RadioGroupItem value='Fixed Bid' id='fixed' />
-                <Label htmlFor='fixed'>Fixed Bid</Label>
+        <div className='mt-8'>
+          <Label className='block text-sm font-medium text-gray-700 mb-1'>
+            Billing Type<span className='text-red-500'>*</span>
+          </Label>
+          <RadioGroup
+            defaultValue={formData.billingType}
+            onValueChange={(val) => handleSelect("billingType", val)}
+            className='flex space-x-6'
+          >
+            {["Fixed Bid", "Time and Material", "Non-Billable"].map((type) => (
+              <div key={type} className='flex items-center space-x-2'>
+                <RadioGroupItem value={type} id={type} />
+                <Label htmlFor={type} className='text-sm text-gray-700'>
+                  {type}
+                </Label>
               </div>
-              <div className='flex items-center space-x-2'>
-                <RadioGroupItem value='Time and Material' id='tm' />
-                <Label htmlFor='tm'>Time and Material</Label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <RadioGroupItem value='Non-Billable' id='non' />
-                <Label htmlFor='non'>Non-Billable</Label>
-              </div>
-            </RadioGroup>
-          </div>
+            ))}
+          </RadioGroup>
+        </div>
+
+        <div className='flex justify-end space-x-4 mt-10'>
+          <Button
+            variant='outline'
+            onClick={() => navigate("/projects List")}
+            className='w-28'
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={isSaving} className='w-28'>
+            {isSaving ? "Adding..." : "Add"}
+          </Button>
         </div>
       </div>
-
-      {/* Submit + Cancel */}
-      <div className='flex justify-end gap-1 mt-8'>
-        <Button
-          variant='outline'
-          className='mr-2 w-28'
-          onClick={() => navigate("/projects")}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant='default'
-          className='mr-2 w-28'
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          {isLoading ? "Adding..." : "Add"}
-        </Button>
-      </div>
-    </>
+    </div>
   );
 };
 

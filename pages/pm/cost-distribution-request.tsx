@@ -1,6 +1,6 @@
 import React from "react";
 import SideNavbarTravel from "../../components/layouts/side-navbar-travel";
-const costDistributionRequest = () => {
+const CostDistributionRequest = () => {
   return (
     <div className='flex gap-8'>
       <SideNavbarTravel />
@@ -11,4 +11,4 @@ const costDistributionRequest = () => {
   );
 };
 
-export default costDistributionRequest;
+export default CostDistributionRequest;

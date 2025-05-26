@@ -1,6 +1,6 @@
 import React from "react";
 import SideNavbarTravel from "../../components/layouts/side-navbar-travel";
-const billingRate = () => {
+const BillingRate = () => {
   return (
     <div className='flex gap-8'>
       <SideNavbarTravel />
@@ -11,4 +11,4 @@ const billingRate = () => {
   );
 };
 
-export default billingRate;
+export default BillingRate;

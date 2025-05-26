@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
       icon: <Users size={18} />,
     },
     {
-      path: "/travel",
+      path: "/travel and expense management",
       label: "Travel and Expense Management",
       icon: <Briefcase size={18} />,
     },
@@ -31,14 +31,14 @@ const NavBar: React.FC = () => {
       icon: <Activity size={18} />,
     },
     {
-      path: "/projects",
+      path: "/projects List",
       label: "Projects and Budget",
       icon: <BarChart3 size={18} />,
     },
   ];
 
   return (
-    <nav className='bg-[#28a5d6] from-cyan-500 to-blue-500 text-white py-2'>
+    <nav className='bg-[#28a5d6] from-cyan-500 to-blue-500 text-white py-1'>
       <div className='flex items-center px-2'>
         {navItems.map((item) => (
           <NavLink
@@ -46,7 +46,7 @@ const NavBar: React.FC = () => {
             to={item.path}
             className={({ isActive }) => `
               relative flex items-center gap-2 px-4 py-3 transition-colors rounded-t-lg
-              ${isActive ? "bg-white/20" : "hover:bg-white/10"}
+
               ${
                 isActive
                   ? "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white"
@@ -55,7 +55,7 @@ const NavBar: React.FC = () => {
             `}
           >
             {item.icon}
-            <span className='text-lg font-medium'>{item.label}</span>
+            <span className='text-md font-medium'>{item.label}</span>
           </NavLink>
         ))}
       </div>
@@ -64,3 +64,5 @@ const NavBar: React.FC = () => {
 };
 
 export default NavBar;
+
+//${isActive ? "bg-white/20" : "hover:bg-white/10"}

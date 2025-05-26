@@ -5,27 +5,27 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   {
     label: "Travel Request",
-    to: "/travel",
+    to: "/travel and expense management",
     key: "travel-request",
   },
   {
     label: "Exchange Rate",
-    to: "/finance/exchange-rate",
+    to: "/travel and expense management/exchange-rate",
     key: "exchange-rate",
   },
   {
     label: "Cost Distribution Request",
-    to: "/pm/cost-distribution-request",
+    to: "/travel and expense management/cost-distribution-request",
     key: "cost-distribution-request",
   },
   {
     label: "Resources Role",
-    to: "/hr/assign-role",
+    to: "/travel and expense management/assign-role",
     key: "resources-role",
   },
   {
     label: "Billing Rates",
-    to: "/finance/billing-rate",
+    to: "/travel and expense management/billing-rate",
     key: "billing-rates",
   },
 ];

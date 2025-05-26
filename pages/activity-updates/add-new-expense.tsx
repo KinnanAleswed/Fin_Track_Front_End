@@ -1,11 +1,10 @@
-import React from 'react'
-
-const addNewExpense = () => {
+import AddExpenseForm from "../../components/forms/add-new-expense-form";
+const AddNewExpense = () => {
   return (
     <div>
-      <h1>ADD NEW EXPENSE</h1>
+      <AddExpenseForm />
     </div>
-  )
-}
+  );
+};
 
-export default addNewExpense
+export default AddNewExpense;

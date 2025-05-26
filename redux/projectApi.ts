@@ -1,18 +1,31 @@
 // src/redux/api/projectApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
+  LookupOption,
+  GetLookupsResponse,
   NewProjectRequest,
   NewProjectResponse,
-} from "../../src/redux/types";
+  ProjectListItem, // ← import the new list‐item type
+} from "./projecttypes";
 
 export const projectApi = createApi({
   reducerPath: "projectApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8000/api",
-  }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api" }),
   tagTypes: ["Project"],
   endpoints: (builder) => ({
-    // POST /projects - Create a new project
+    // 1) LOOKUPS
+    getLookups: builder.query<GetLookupsResponse, void>({
+      query: () => "/lookups",
+    }),
+
+    // 2) FETCH PROJECTS
+    getProjects: builder.query<ProjectListItem[], void>({
+      
+      query: () => "/projects",
+      providesTags: ["Project"],
+    }),
+
+    // 3) ADD PROJECT
     addProject: builder.mutation<NewProjectResponse, NewProjectRequest>({
       query: (projectData) => ({
         url: "/projects",
@@ -21,22 +34,11 @@ export const projectApi = createApi({
       }),
       invalidatesTags: ["Project"],
     }),
-
-    // GET /project-managers - Fetch project managers
-    getProjectManagers: builder.query<{ id: string; name: string }[], void>({
-      query: () => "/project-managers",
-    }),
-
-    // GET /projects - Fetch all projects
-    getProjects: builder.query<any[], void>({
-      query: () => "/projects",
-      providesTags: ["Project"],
-    }),
   }),
 });
 
 export const {
+  useGetLookupsQuery,
+  useGetProjectsQuery,
   useAddProjectMutation,
-  useGetProjectManagersQuery,
-  useGetProjectsQuery, // <-- export the new hook here
 } = projectApi;

@@ -8,7 +8,7 @@ import type {
 import type {
   NewProjectRequest,
   NewProjectResponse,
-} from "../../../redux/types";
+} from "../../../redux/projecttypes";
 
 type MyBuilder = EndpointBuilder<
   BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>,

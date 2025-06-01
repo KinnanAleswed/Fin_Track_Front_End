@@ -1,4 +1,4 @@
-import React from 'react'
+
 import SideNavbarAdmin from "../../components/layouts/side-navbar-admin";
 import {
   DropdownMenu,
@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menue'
-import { Pencil, ChevronDown } from 'lucide-react'
+import { SquarePen , ChevronDown ,Eye } from 'lucide-react'
 import { Button } from '../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useGetMasterLookupQuery } from '../../redux/MasterLookupApi';
@@ -62,8 +62,15 @@ const LookupList = () => {
                           variant="outline"
                           className="rounded-full border border-[#eaf6fb] p-1 text-[#28a5d6] hover:bg-[#eaf6fb]"
                           onClick={() => navigate(`/administration/lookup-list/add-new-master-lookup/edit/${item.Id}`)}>
-                          <Pencil className="h-4 w-4 text-[#A1A1AA]" />
+                          <SquarePen className="h-4 w-4 rounded-2xl text-[#28a5d6] " />
                         </Button>
+                        <Button
+                            variant="outline"
+                            className="rounded-full border border-[#eaf6fb] p-1 text-[#28a5d6] hover:bg-[#eaf6fb] ml-2"
+                            onClick={() => navigate(`/administration/lookup-list/${item.Id}`)} 
+                          >
+                            <Eye className="h-4 w-4 text-[#A1A1AA]" />
+                          </Button>
 
                       </td>
                     </tr>

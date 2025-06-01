@@ -24,6 +24,7 @@ function AddNewMasterLookup() {
     comments: "",
      modifiedBy: 1
   });
+  const [error, setError] = useState<string | null>(null);
 
   const isEditMode = Boolean(id);
   const {
@@ -32,9 +33,7 @@ function AddNewMasterLookup() {
     isSuccess,
     // isError,
     // error,
-  } = useGetMasterLookupQuery(undefined, {
-    skip: !isEditMode,
-  });
+  } = useGetMasterLookupQuery();
 
   const [addMasterLookup, { isLoading: isAdding }] = useAddMasterLookupMutation();
   const [updateMasterLookup, { isLoading: isUpdating }] = useUpdateMasterLookupMutation();
@@ -70,29 +69,42 @@ function AddNewMasterLookup() {
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({
       ...prev,
-      isActive: checked ? 1 : 0,
+      isActive: checked ? 0 : 1 ,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // make sure data is unique
+    if (lookupData) {
+      const duplicate = lookupData.find(
+        (item) =>
+          (item.value === formData.value || item.description_EN === formData.description_EN || item.description_AR === formData.description_AR) &&
+          (!isEditMode || String(item.Id) !== id)
+      );
+      if (duplicate) {
+        setError("There is an already existing record with the same values.");
+        return;
+      }
+    }
+
     try {
-       if (isEditMode && id) {
-        // For updates, ensure we send the correct ID case and include modifiedBy
-        await updateMasterLookup({ 
+      if (isEditMode && id) {
+        await updateMasterLookup({
           id: Number(id),
           ...formData,
-          modifiedBy: 1 
+          modifiedBy: 1,
         }).unwrap();
       } else {
-        
-        const { modifiedBy, ...createData } = formData;
+        const { /*modifiedBy,*/ ...createData } = formData;
         await addMasterLookup(createData).unwrap();
       }
       navigate("/administration/lookup-list");
     } catch (err) {
       console.error("Error saving master lookup:", err);
-      alert("Failed to save master lookup.");
+       setError("Form incomplete. Kindly fill in all the necessary information.");
     }
   };
 
@@ -103,6 +115,9 @@ function AddNewMasterLookup() {
       <h2 className="text-xl font-semibold">
         {isEditMode ? "Edit Master Lookup" : "Add New Master Lookup"}
       </h2>
+      {error && (
+        <div className="text-red-600 font-medium">{error}</div>
+      )}
 
       <div className="space-y-1">
         <Label htmlFor="value">
@@ -152,7 +167,7 @@ function AddNewMasterLookup() {
           id="comments"
           name="comments"
           placeholder="type in your comment here ......"
-          className="bg-muted min-h-[100px]"
+          className="bg-white min-h-[100px]"
           value={formData.comments}
           onChange={handleChange}
         />

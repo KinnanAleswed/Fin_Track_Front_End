@@ -18,6 +18,7 @@ import AddNewDetailedLookup from "../pages/adminstration/add-new-detailed-lookup
 import AddNewMasterLookup from "../pages/adminstration/add-new-master-lookup";
 import AddNewNotification from "../pages/adminstration/add-new-notification";
 import AddNewLocation from "../pages/adminstration/add-new-location";
+import DetailedLookupList from "../pages/adminstration/detailed-lookup-list";
 export const AppRoutes = () => (
   <Routes>
     <Route path='/Dashboard' element={<Dashboard />} />
@@ -60,9 +61,17 @@ export const AppRoutes = () => (
       path='/administration/lookup-list/add-new-detailed-lookup'
       element={<AddNewDetailedLookup />}
       />
+      <Route path="/administration/detailed-lookup/:id"
+       element={<AddNewDetailedLookup />} 
+       />
+
     <Route
       path='/administration/lookup-list/add-new-master-lookup'
       element={<AddNewMasterLookup />}
+    />
+    <Route
+    path='/administration/lookup-list/:masterLookupId'
+    element={<DetailedLookupList />}
     />
     <Route 
     path="/administration/lookup-list/add-new-master-lookup/edit/:id" 
@@ -80,6 +89,7 @@ export const AppRoutes = () => (
       element={<NotificationList />}
     />
     <Route path='/administration/lookup-list' element={<LookupList />} />
+    
   </Routes>
 );
 

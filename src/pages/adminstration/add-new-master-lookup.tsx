@@ -166,7 +166,7 @@ function AddNewMasterLookup() {
         <Textarea
           id="comments"
           name="comments"
-          placeholder="type in your comment here ......"
+          placeholder="optional comments"
           className="bg-white min-h-[100px]"
           value={formData.comments}
           onChange={handleChange}

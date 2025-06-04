@@ -4,8 +4,9 @@ import { ChevronRight, HomeIcon } from "lucide-react";
 
 const Breadcrumbs = () => {
   const location = useLocation();
-  const pathnames = location.pathname.split("/").filter((x) => x);
-
+  const pathnames = location.pathname
+  .split('/')
+  .filter((x) => x && isNaN(Number(x)));
   return (
     <nav
       className='flex items-center text-sm text-gray-500'

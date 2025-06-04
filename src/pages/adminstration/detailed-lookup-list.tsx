@@ -13,7 +13,7 @@ const DetailedLookupList = () => {
   const { data: detailedLookups = [], isLoading, error } = useGetDetailedLookupsByMasterIdQuery(id,{
     skip: !isValidId
   }); 
-  console.log("Fetched detailed lookups:", detailedLookups);
+  // console.log("Fetched detailed lookups:", detailedLookups);
  const navigate = useNavigate();
   return (
     <>

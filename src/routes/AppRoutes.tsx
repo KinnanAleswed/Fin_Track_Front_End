@@ -17,19 +17,22 @@ import AddNewExpense from "../../src/pages/activity-updates/add-new-expense";
 import AddNewDetailedLookup from "../pages/adminstration/add-new-detailed-lookup";
 import AddNewMasterLookup from "../pages/adminstration/add-new-master-lookup";
 import AddNewNotification from "../pages/adminstration/add-new-notification";
-import AddNewLocation from "../pages/adminstration/add-new-location";
+import AddNewLocation from "../pages/adminstration/add-new-country";
 import DetailedLookupList from "../pages/adminstration/detailed-lookup-list";
+import AddNewCity from "../pages/adminstration/add-new-city";
+import CityList from "../pages/adminstration/city-list";
+
 export const AppRoutes = () => (
   <Routes>
     <Route path='/Dashboard' element={<Dashboard />} />
     <Route path='/administration' element={<LocationList />} />
-    <Route path="/administration/add-new-location" element={<AddNewLocation/>}/>
+    <Route path="/administration/location-list/add-new-country" element={<AddNewLocation/>}/>
     <Route
-      path='/travel and expense management'
+      path='/travel-and-expense-management'
       element={<TravelRequestApproval />}
     ></Route>
     <Route
-      path='/travel and expense management/new-travel-request'
+      path='/travel-and-expense-management/new-travel-request'
       element={<CreateNewTravelRequest />}
     />
     <Route path='/activities' element={<ProgressUpdate />} />
@@ -42,19 +45,19 @@ export const AppRoutes = () => (
     <Route path='/projects List/Budget Items' element={<CreateBudgetItem />} />
     {/*sidebar travel routes*/}
     <Route
-      path='/travel and expense management/exchange-rate'
+      path='/travel-and-expense-management/exchange-rate'
       element={<ExchangeRate />}
     />
     <Route
-      path='/travel and expense management/cost-distribution-request'
+      path='/travel-and-expense-management/cost-distribution-request'
       element={<CostDistributionRequest />}
     />
     <Route
-      path='/travel and expense management/assign-role'
+      path='/travel-and-expense-management/assign-role'
       element={<AssignRole />}
     />
     <Route
-      path='/travel and expense management/billing-rate'
+      path='/travel-and-expense-management/billing-rate'
       element={<BillingRate />}
     />
     <Route
@@ -89,7 +92,17 @@ export const AppRoutes = () => (
       element={<NotificationList />}
     />
     <Route path='/administration/lookup-list' element={<LookupList />} />
+    <Route
+      path="/administration/location-list/add-new-city"
+      element={<AddNewCity />}
+    />
+    <Route path="/administration/location-list/city-list/:countryId"
+     element={<CityList />} />
+    <Route path="/administration/location-list/add-new-city/:id"
+     element={<AddNewCity/>}/>
     
+    <Route path="/administration/add-new-country/:id" element={<AddNewLocation />} />
+
   </Routes>
 );
 

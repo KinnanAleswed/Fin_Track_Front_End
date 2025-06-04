@@ -24,7 +24,7 @@ const TravelRequestApproval = () => {
       <div className="flex-1 w-full overflow-x-auto">
         <div className="p-6 bg-white rounded-xl">
           <div className="flex justify-end mb-4">
-            <Button onClick={() => navigate('/travel and expense management/new-travel-request')}>Create New Travel Request</Button>
+            <Button onClick={() => navigate('/travel-and-expense-management/new-travel-request')}>Create New Travel Request</Button>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg">

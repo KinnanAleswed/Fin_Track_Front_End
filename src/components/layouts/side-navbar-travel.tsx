@@ -5,27 +5,27 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   {
     label: "Travel Request",
-    to: "/travel and expense management",
+    to: "/travel-and-expense-management",
     key: "travel-request",
   },
   {
     label: "Exchange Rate",
-    to: "/travel and expense management/exchange-rate",
+    to: "/travel-and-expense-management/exchange-rate",
     key: "exchange-rate",
   },
   {
     label: "Cost Distribution Request",
-    to: "/travel and expense management/cost-distribution-request",
+    to: "/travel-and-expense-management/cost-distribution-request",
     key: "cost-distribution-request",
   },
   {
     label: "Resources Role",
-    to: "/travel and expense management/assign-role",
+    to: "/travel-and-expense-management/assign-role",
     key: "resources-role",
   },
   {
     label: "Billing Rates",
-    to: "/travel and expense management/billing-rate",
+    to: "/travel-and-expense-management/billing-rate",
     key: "billing-rates",
   },
 ];
@@ -61,5 +61,4 @@ const SideNavbarTravel = () => {
     </div>
   );
 };
-
 export default SideNavbarTravel;

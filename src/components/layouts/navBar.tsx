@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
       icon: <Users size={18} />,
     },
     {
-      path: "/travel and expense management",
+      path: "/travel-and-expense-management",
       label: "Travel and Expense Management",
       icon: <Briefcase size={18} />,
     },
